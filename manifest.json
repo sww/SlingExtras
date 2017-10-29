@@ -1,0 +1,17 @@
+{
+    "manifest_version": 2,
+    "name": "Extra Sling functions.",
+    "description": "This extension adds extra features to the Sling web player.",
+    "version": "0.1",
+    "content_scripts": [{
+        "js": [
+            "sling.js"
+        ],
+        "matches": [
+            "https://watch.sling.com/*"
+        ]
+    }],
+    "web_accessible_resources": [
+        "jump.js"
+    ]
+}
