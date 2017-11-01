@@ -6,6 +6,8 @@ var SlingExtras = {
         this.WatchService = this.angular.injector().get('WatchService');
         this.AppConstants = this.angular.injector().get('AppConstants');
 
+        this.channelChangeListener();
+
         this.initialized = true;
         console.log('initialized', this.initialized);
     },
@@ -30,6 +32,21 @@ var SlingExtras = {
         }
 
         this.WatchService.watch(channel, this.AppConstants.VIDEO.ACTIONS.RESUME);
+    },
+
+    channelChangeListener: function() {
+        self = this
+        this.angular.scope().$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
+            var nextChannelId = self.getChannelId(nextUrl);
+            if (!nextChannelId) {
+                return;
+            }
+
+            var currentChannelId = self.getChannelId(currentUrl);
+            if (currentChannelId && currentChannelId !== localStorage['lastChannelId']) {
+                localStorage['lastChannelId'] = currentChannelId;
+            }
+        });
     },
 
     jump: function() {
