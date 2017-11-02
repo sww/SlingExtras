@@ -67,7 +67,7 @@ var SlingExtras = {
 }
 
 window.addEventListener("keyup", function(e) {
-    switch (e.key.toLower()) {
+    switch (e.key) {
     case 'i':
         if (!SlingExtras.initialized) {
             SlingExtras.init();
