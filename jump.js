@@ -17,7 +17,7 @@ var SlingExtras = {
         var re = /channel=(\d+)/;
         var results = re.exec(url);
         if (results !== null) {
-            return results[1];
+            return parseInt(results[1], 10);
         }
 
         return null;
