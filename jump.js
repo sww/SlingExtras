@@ -23,6 +23,12 @@ var SlingExtras = {
         return null;
     },
 
+    setLastChannelId: function(channelId) {
+        if (channelId && channelId !== localStorage['lastChannelId']) {
+            localStorage['lastChannelId'] = channelId;
+        }
+    },
+
     switchToChannel: function(channelId) {
         console.log("Switching to channel", channelId);
         var channelId = parseInt(channelId, 10);
@@ -43,10 +49,8 @@ var SlingExtras = {
             }
 
             var currentChannelId = self.getChannelId(currentUrl);
-            if (currentChannelId && currentChannelId !== localStorage['lastChannelId']) {
-                localStorage['lastChannelId'] = currentChannelId;
-            }
-        });
+            this.setLastChannelId(currentChannelId);
+         });
     },
 
     jump: function() {
@@ -58,10 +62,7 @@ var SlingExtras = {
             return;
         }
 
-        if (currentChannelId) {
-            localStorage['lastChannelId'] = currentChannelId;
-        }
-
+        this.setLastChannelId(currentChannelId);
         this.switchToChannel(previousChannelId);
     }
 }
