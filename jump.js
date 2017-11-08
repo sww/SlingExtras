@@ -68,11 +68,13 @@ var SlingExtras = {
 }
 
 window.addEventListener("keyup", function(e) {
+    if (!SlingExtras.initialized) {
+        SlingExtras.init();
+    }
+
     switch (e.key) {
     case 'i':
-        if (!SlingExtras.initialized) {
-            SlingExtras.init();
-        }
+        SlingExtras.init();
         break;
     case 'j':
         SlingExtras.jump();
