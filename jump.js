@@ -49,7 +49,7 @@ var SlingExtras = {
             }
 
             var currentChannelId = self.getChannelId(currentUrl);
-            this.setLastChannelId(currentChannelId);
+            self.setLastChannelId(currentChannelId);
          });
     },
 
