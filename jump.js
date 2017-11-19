@@ -49,6 +49,11 @@ var SlingExtras = {
             }
 
             var currentChannelId = self.getChannelId(currentUrl);
+
+            if (currentChannelId === nextChannelId) {
+                return;
+            }
+
             self.setLastChannelId(currentChannelId);
          });
     },
