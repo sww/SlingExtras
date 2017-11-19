@@ -64,6 +64,28 @@ var SlingExtras = {
 
         this.setLastChannelId(currentChannelId);
         this.switchToChannel(previousChannelId);
+    },
+
+    setFavoriteChannel: function(key) {
+        var channelId = this.getChannelId(window.location.href);
+        if (!channelId) {
+            console.debug('Unable to get channelId!');
+            return;
+        }
+
+        localStorage['favoriteChannel' + key] = channelId;
+        console.log('Set', key, 'to', channelId);
+    },
+
+    switchToFavorite: function(key) {
+        key = parseInt(key, 10);
+        channelId = localStorage['favoriteChannel' + key];
+        if (!channelId) {
+            console.debug('No channelId set for key', key);
+            return;
+        }
+
+        this.switchToChannel(channelId);
     }
 }
 
@@ -78,6 +100,20 @@ window.addEventListener("keyup", function(e) {
         break;
     case 'j':
         SlingExtras.jump();
+        break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+    case '0':
+        e.ctrlKey ?
+            SlingExtras.setFavoriteChannel(e.key) :
+            SlingExtras.switchToFavorite(e.key);
         break;
     }
 }, false);
