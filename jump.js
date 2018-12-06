@@ -37,33 +37,39 @@ var SlingExtras = {
     },
 
     switchToChannel: function(channelId) {
-        console.debug("Switching to channel", channelId);
+        console.debug('Switching to channel', channelId);
         var channelId = channelId;
         // The channel event object.
         var channel = {
-            "channel_guid": channelId,
-            "type": "channel"
-        }
+            channel_guid: channelId,
+            type: 'channel'
+        };
 
-        this.WatchService.watch(channel, this.AppConstants.VIDEO.ACTIONS.RESUME);
+        this.WatchService.watch(
+            channel,
+            this.AppConstants.VIDEO.ACTIONS.RESUME
+        );
     },
 
     channelChangeListener: function() {
-        self = this
-        this.angular.injector().get('$rootScope').$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
-            var nextChannelId = self.getChannelId(nextUrl);
-            if (!nextChannelId) {
-                return;
-            }
+        self = this;
+        this.angular
+            .injector()
+            .get('$rootScope')
+            .$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
+                var nextChannelId = self.getChannelId(nextUrl);
+                if (!nextChannelId) {
+                    return;
+                }
 
-            var currentChannelId = self.getChannelId(currentUrl);
+                var currentChannelId = self.getChannelId(currentUrl);
 
-            if (currentChannelId === nextChannelId) {
-                return;
-            }
+                if (currentChannelId === nextChannelId) {
+                    return;
+                }
 
-            self.setLastChannelId(currentChannelId);
-         });
+                self.setLastChannelId(currentChannelId);
+            });
     },
 
     jump: function() {
@@ -71,7 +77,7 @@ var SlingExtras = {
         var previousChannelId = localStorage['lastChannelId'];
 
         if (!previousChannelId) {
-            console.log("No channel to jump back to.");
+            console.log('No channel to jump back to.');
             return;
         }
 
@@ -100,33 +106,37 @@ var SlingExtras = {
 
         this.switchToChannel(channelId);
     }
-}
+};
 
-window.addEventListener("keyup", function(e) {
-    if (!SlingExtras.initialized) {
-        SlingExtras.init();
-    }
+window.addEventListener(
+    'keyup',
+    function(e) {
+        if (!SlingExtras.initialized) {
+            SlingExtras.init();
+        }
 
-    switch (e.key) {
-    case 'i':
-        SlingExtras.init();
-        break;
-    case 'j':
-        SlingExtras.jump();
-        break;
-    case '1':
-    case '2':
-    case '3':
-    case '4':
-    case '5':
-    case '6':
-    case '7':
-    case '8':
-    case '9':
-    case '0':
-        e.ctrlKey ?
-            SlingExtras.setFavoriteChannel(e.key) :
-            SlingExtras.switchToFavorite(e.key);
-        break;
-    }
-}, false);
+        switch (e.key) {
+            case 'i':
+                SlingExtras.init();
+                break;
+            case 'j':
+                SlingExtras.jump();
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '0':
+                e.ctrlKey
+                    ? SlingExtras.setFavoriteChannel(e.key)
+                    : SlingExtras.switchToFavorite(e.key);
+                break;
+        }
+    },
+    false
+);
