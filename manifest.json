@@ -4,6 +4,7 @@
     "description": "This extension adds extra features to the Sling web player.",
     "version": "0.1",
     "content_scripts": [{
+        "run_at" : "document_idle",
         "js": [
             "sling.js"
         ],
