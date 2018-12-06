@@ -13,11 +13,11 @@ var SlingExtras = {
     },
 
     getChannelId: function(url) {
-        // https://watch.sling.com/watch?type=linear&id=22339910&channel=1081&action=resume
-        var re = /channel=(\d+)/;
+        // https://watch.sling.com/watch?type=linear&channelId=d52f32733fff4580888f22cc94c2c11c&action=resume
+        var re = /channelId=([A-Za-z0-9]+)/;
         var results = re.exec(url);
         if (results !== null) {
-            return parseInt(results[1], 10);
+            return results[1];
         }
 
         return null;
@@ -30,10 +30,11 @@ var SlingExtras = {
     },
 
     switchToChannel: function(channelId) {
-        console.log("Switching to channel", channelId);
-        var channelId = parseInt(channelId, 10);
+        console.debug("Switching to channel", channelId);
+        var channelId = channelId;
+        // The channel event object.
         var channel = {
-            "id": channelId,
+            "channel_guid": channelId,
             "type": "channel"
         }
 
@@ -42,7 +43,7 @@ var SlingExtras = {
 
     channelChangeListener: function() {
         self = this
-        this.angular.scope().$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
+        this.angular.injector().get('$rootScope').$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
             var nextChannelId = self.getChannelId(nextUrl);
             if (!nextChannelId) {
                 return;
