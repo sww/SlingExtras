@@ -1,7 +1,7 @@
 Sling Extras
 ===
 
-A Chrome extension that adds extra functionality to the Sling webplayer.
+A Chrome extension that adds extra functionality to the Sling TV webplayer.
 
 Hotkeys
 -----
