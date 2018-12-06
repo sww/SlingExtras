@@ -3,13 +3,18 @@ var SlingExtras = {
 
     init: function() {
         this.angular = angular.element(document);
+        if (!this.angular) {
+            console.error('Unable to load the Angular object.');
+            return;
+        }
+
         this.WatchService = this.angular.injector().get('WatchService');
         this.AppConstants = this.angular.injector().get('AppConstants');
 
         this.channelChangeListener();
 
         this.initialized = true;
-        console.log('initialized', this.initialized);
+        console.debug('SlingExtras initialized:', this.initialized);
     },
 
     getChannelId: function(url) {
@@ -24,7 +29,9 @@ var SlingExtras = {
     },
 
     setLastChannelId: function(channelId) {
+        console.debug('Attempting to set lastChannelId to', channelId);
         if (channelId && channelId !== localStorage['lastChannelId']) {
+            console.debug('Set lastChannelId to', channelId);
             localStorage['lastChannelId'] = channelId;
         }
     },
