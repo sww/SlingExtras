@@ -19,13 +19,12 @@ var SlingExtras = {
 
     getChannelId: function(url) {
         // https://watch.sling.com/watch?type=linear&channelId=d52f32733fff4580888f22cc94c2c11c&action=resume
-        var re = /channelId=([A-Za-z0-9]+)/;
-        var results = re.exec(url);
-        if (results !== null) {
-            return results[1];
+        const u = new URL(url);
+        if (!u.pathname || u.pathname !== '/watch') {
+            return null;
         }
 
-        return null;
+        return u.searchParams.get('channelId');
     },
 
     setLastChannelId: function(channelId) {
