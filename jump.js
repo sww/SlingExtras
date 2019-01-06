@@ -17,6 +17,21 @@ var SlingExtras = {
         console.debug('SlingExtras initialized:', this.initialized);
     },
 
+    togglePlaybackControlsOverlay: function() {
+        const sections = document.getElementsByClassName('watch');
+        if (sections.length === 0) {
+            console.log('Could not find overlay');
+            return;
+        }
+
+        const playbackSection = sections.item(0);
+        angular
+            .element(playbackSection)
+            .controller('watch').overlaysVisible = !angular
+            .element(playbackSection)
+            .controller('watch').overlaysVisible;
+    },
+
     getChannelId: function(url) {
         // https://watch.sling.com/watch?type=linear&channelId=d52f32733fff4580888f22cc94c2c11c&action=resume
         const u = new URL(url);
@@ -117,6 +132,9 @@ window.addEventListener(
         switch (e.key) {
             case 'i':
                 SlingExtras.init();
+                break;
+            case 'o':
+                SlingExtras.togglePlaybackControlsOverlay();
                 break;
             case 'j':
                 SlingExtras.jump();
