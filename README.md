@@ -3,6 +3,13 @@ Sling Extras
 
 A Chrome extension that adds extra functionality to the Sling TV webplayer.
 
+Installation
+-----
+
+1. Clone the repo.
+2. Go to the extensions settings in Chrome, and enable `Developer mode`.
+3. Then click on `Load unpacked` and load this repo.
+
 Hotkeys
 -----
 
