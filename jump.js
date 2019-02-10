@@ -1,4 +1,6 @@
 var SlingExtras = {
+    STORAGE_PREFIX: 'SlingExtras::',
+
     initialized: false,
 
     init: function() {
@@ -8,6 +10,7 @@ var SlingExtras = {
             return;
         }
 
+        this.Channels = this.angular.injector().get('Channels');
         this.WatchService = this.angular.injector().get('WatchService');
         this.AppConstants = this.WatchService.AppConstants;
 
@@ -73,19 +76,31 @@ var SlingExtras = {
             return;
         }
 
-        localStorage['favoriteChannel' + key] = channelId;
-        console.log('Set', key, 'to', channelId);
+        self = this;
+
+        this.Channels.getChannelByGuid(channelId).then(function(e) {
+            const channel = JSON.stringify({ id: channelId, channelName: e.name })
+            const storageKey = self.STORAGE_PREFIX + 'favoriteChannel' + key;
+            localStorage[storageKey] = channel;
+            console.log('Set', storageKey, 'to', channel);
+        });
     },
 
     switchToFavorite: function(key) {
         key = parseInt(key, 10);
-        channelId = localStorage['favoriteChannel' + key];
-        if (!channelId) {
-            console.debug('No channelId set for key', key);
+        const channelData = localStorage[this.STORAGE_PREFIX + 'favoriteChannel' + key]
+        if (!channelData) {
+            console.log('Favorite channel not set for key: ', key);
             return;
         }
 
-        this.switchToChannel(channelId);
+        const channel = JSON.parse(channelData);
+        if (!channel || !channel.id) {
+            console.debug('No channel set for key', key);
+            return;
+        }
+
+        this.switchToChannel(channel.id);
     }
 };
 
