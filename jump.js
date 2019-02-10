@@ -9,9 +9,7 @@ var SlingExtras = {
         }
 
         this.WatchService = this.angular.injector().get('WatchService');
-        this.AppConstants = this.angular.injector().get('AppConstants');
-
-        this.channelChangeListener();
+        this.AppConstants = this.WatchService.AppConstants;
 
         this.initialized = true;
         console.debug('SlingExtras initialized:', this.initialized);
@@ -42,14 +40,6 @@ var SlingExtras = {
         return u.searchParams.get('channelId');
     },
 
-    setLastChannelId: function(channelId) {
-        console.debug('Attempting to set lastChannelId to', channelId);
-        if (channelId && channelId !== localStorage['lastChannelId']) {
-            console.debug('Set lastChannelId to', channelId);
-            localStorage['lastChannelId'] = channelId;
-        }
-    },
-
     switchToChannel: function(channelId) {
         console.debug('Switching to channel', channelId);
 
@@ -59,37 +49,20 @@ var SlingExtras = {
         );
     },
 
-    channelChangeListener: function() {
-        self = this;
-        this.angular
-            .injector()
-            .get('$rootScope')
-            .$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
-                var nextChannelId = self.getChannelId(nextUrl);
-                if (!nextChannelId) {
-                    return;
-                }
-
-                var currentChannelId = self.getChannelId(currentUrl);
-
-                if (currentChannelId === nextChannelId) {
-                    return;
-                }
-
-                self.setLastChannelId(currentChannelId);
-            });
-    },
-
     jump: function() {
-        var currentChannelId = this.getChannelId(window.location.href);
-        var previousChannelId = localStorage['lastChannelId'];
+        const channelRecall = localStorage['FOREVER_USER::channelRecall'];
+        console.log(channelRecall);
+        if (!channelRecall) {
+            console.log('Channel recall is empty.');
+            return;
+        }
 
+        const previousChannelId = JSON.parse(channelRecall)[1];
         if (!previousChannelId) {
             console.log('No channel to jump back to.');
             return;
         }
 
-        this.setLastChannelId(currentChannelId);
         this.switchToChannel(previousChannelId);
     },
 
