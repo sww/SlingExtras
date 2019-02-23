@@ -53,14 +53,21 @@ var SlingExtras = {
     },
 
     jump: function() {
-        const channelRecall = localStorage['FOREVER_USER::channelRecall'];
-        console.log(channelRecall);
-        if (!channelRecall) {
+        const channelRecallData = localStorage['FOREVER_USER::channelRecall'];
+        if (!channelRecallData) {
             console.log('Channel recall is empty.');
             return;
         }
 
-        const previousChannelId = JSON.parse(channelRecall)[1];
+        const channelRecall = JSON.parse(channelRecallData);
+
+        // If we're not currently watching anything, go back to the last channel.
+        // Otherwise go to the channel before the one we're watching now.
+        const u = new URL(window.location.href);
+        const previousChannelId =
+            !u.pathname || !u.pathname.startsWith('/watch')
+                ? channelRecall[0]
+                : channelRecall[1];
         if (!previousChannelId) {
             console.log('No channel to jump back to.');
             return;
