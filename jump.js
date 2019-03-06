@@ -1,5 +1,6 @@
 var SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
+    MAX_RECALL: 5,
 
     initialized: false,
 
@@ -15,6 +16,8 @@ var SlingExtras = {
         this.AppConstants = this.WatchService.AppConstants;
 
         this.initialized = true;
+        this.channelChangeListener();
+
         console.debug('SlingExtras initialized:', this.initialized);
     },
 
@@ -52,8 +55,45 @@ var SlingExtras = {
         );
     },
 
+    channelChangeListener: function() {
+        self = this;
+        this.angular
+            .injector()
+            .get('$rootScope')
+            .$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
+                const nextChannelId = self.getChannelId(nextUrl);
+                if (!nextChannelId) {
+                    return;
+                }
+
+                const channelRecallKey = self.STORAGE_PREFIX + 'channelRecall';
+                const channelRecallData = localStorage[channelRecallKey];
+                const channelRecall =
+                    channelRecallData === undefined
+                        ? []
+                        : JSON.parse(channelRecallData);
+
+                if (channelRecall.indexOf(nextChannelId) > -1) {
+                    // nextChannelId exists in channelRecall, remove nextChannelId from its position.
+                    channelRecall.splice(
+                        channelRecall.indexOf(nextChannelId),
+                        1
+                    )[0];
+                }
+
+                channelRecall.unshift(nextChannelId);
+
+                if (channelRecall.length > self.MAX_RECALL) {
+                    channelRecall.pop();
+                }
+
+                localStorage[channelRecallKey] = JSON.stringify(channelRecall);
+            });
+    },
+
     jump: function() {
-        const channelRecallData = localStorage['FOREVER_USER::channelRecall'];
+        const channelRecallData =
+            localStorage[this.STORAGE_PREFIX + 'channelRecall'];
         if (!channelRecallData) {
             console.log('Channel recall is empty.');
             return;
