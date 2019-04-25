@@ -1,4 +1,4 @@
-var SlingExtras = {
+const SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
     MAX_RECALL: 5,
 
