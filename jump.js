@@ -12,6 +12,7 @@ const SlingExtras = {
         }
 
         this.Channels = this.angular.injector().get('Channels');
+        this.ErrorService = this.angular.injector().get('ErrorService');
         this.WatchService = this.angular.injector().get('WatchService');
         this.AppConstants = this.WatchService.AppConstants;
 
@@ -46,6 +47,17 @@ const SlingExtras = {
         return u.searchParams.get('channelId');
     },
 
+    getChannelRecall: function() {
+        const channelRecallKey = self.STORAGE_PREFIX + 'channelRecall';
+        const channelRecallData = localStorage[channelRecallKey];
+        const channelRecall =
+            channelRecallData === undefined
+                ? []
+                : JSON.parse(channelRecallData);
+
+        return channelRecall;
+    },
+
     switchToChannel: function(channelId) {
         console.debug('Switching to channel', channelId);
 
@@ -53,6 +65,26 @@ const SlingExtras = {
             { channel_guid: channelId, type: 'channel' },
             this.AppConstants.VIDEO.ACTIONS.RESUME
         );
+    },
+
+    showRecentChannels: function() {
+        const channelRecall = this.getChannelRecall();
+        const channels = channelRecall.map((channel, i) => {
+            return this.Channels.getChannelByGuid(channel);
+        });
+
+        Promise.all(channels).then(values => {
+            const message = values
+                  .map((channel, i) => {
+                      return i + ': ' + channel.name;
+                  })
+                  .join(', ');
+            this.ErrorService.displayMessage({
+                displayType: 'toast',
+                message: message,
+                severity: 'info'
+            });
+        });
     },
 
     channelChangeListener: function() {
@@ -66,13 +98,7 @@ const SlingExtras = {
                     return;
                 }
 
-                const channelRecallKey = self.STORAGE_PREFIX + 'channelRecall';
-                const channelRecallData = localStorage[channelRecallKey];
-                const channelRecall =
-                    channelRecallData === undefined
-                        ? []
-                        : JSON.parse(channelRecallData);
-
+                const channelRecall = self.getChannelRecall();
                 if (channelRecall.indexOf(nextChannelId) > -1) {
                     // nextChannelId exists in channelRecall, remove nextChannelId from its position.
                     channelRecall.splice(
@@ -167,6 +193,9 @@ window.addEventListener(
                 break;
             case 'j':
                 SlingExtras.jump();
+                break;
+            case 'r':
+                SlingExtras.showRecentChannels();
                 break;
             case '1':
             case '2':
