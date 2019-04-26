@@ -96,6 +96,17 @@ const SlingExtras = {
         });
     },
 
+    switchToRecentChannel: function(channelRecallIndex) {
+        const channelRecall = this.getChannelRecall();
+        if (channelRecallIndex > channelRecall.length) {
+            console.debug(
+                "channelRecallIndex is greater than channelRecall's length"
+            );
+            return;
+        }
+        this.switchToChannel(channelRecall[channelRecallIndex]);
+    },
+
     channelChangeListener: function() {
         self = this;
         this.angular
@@ -219,6 +230,17 @@ window.addEventListener(
                 e.ctrlKey
                     ? SlingExtras.setFavoriteChannel(e.key)
                     : SlingExtras.switchToFavorite(e.key);
+            case ')':
+            case '!':
+            case '@':
+            case '#':
+            case '$':
+                const index = e.keyCode - 48;
+                if (index < 0 || index > SlingExtras.MAX_RECALL) {
+                    console.log('Bad index for switchToRecentChannel');
+                    return;
+                }
+                SlingExtras.switchToRecentChannel(index);
                 break;
         }
     },
