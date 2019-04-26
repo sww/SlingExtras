@@ -1,6 +1,7 @@
 const SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
     MAX_RECALL: 5,
+    CHANNEL_RECALL_KEY: this.STORAGE_PREFIX + 'channelRecall',
 
     initialized: false,
 
@@ -48,8 +49,7 @@ const SlingExtras = {
     },
 
     getChannelRecall: function() {
-        const channelRecallKey = self.STORAGE_PREFIX + 'channelRecall';
-        const channelRecallData = localStorage[channelRecallKey];
+        const channelRecallData = localStorage[this.channelRecallKey];
         const channelRecall =
             channelRecallData === undefined
                 ? []
@@ -113,7 +113,7 @@ const SlingExtras = {
                     channelRecall.pop();
                 }
 
-                localStorage[channelRecallKey] = JSON.stringify(channelRecall);
+                localStorage[this.channelRecallKey] = JSON.stringify(channelRecall);
             });
     },
 
