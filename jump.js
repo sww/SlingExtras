@@ -69,19 +69,28 @@ const SlingExtras = {
 
     showRecentChannels: function() {
         const channelRecall = this.getChannelRecall();
-        const channels = channelRecall.map((channel, i) => {
-            return this.Channels.getChannelByGuid(channel);
-        });
+        const channels = channelRecall
+            .map(channel => {
+                return [
+                    this.Channels.getChannelByGuid(channel),
+                    this.Channels.ExternalChannelService.getAssetOnNow({
+                        channel_guid: channel,
+                        type: 'channel'
+                    })
+                ];
+            })
+            .flat();
 
         Promise.all(channels).then(values => {
-            const message = values
-                  .map((channel, i) => {
-                      return i + ': ' + channel.name;
-                  })
-                  .join(', ');
+            const lines = [];
+            for (var i = 0; i < values.length; i += 2) {
+                lines.push(
+                    i / 2 + ') ' + values[i].name + ': ' + values[i + 1].title
+                );
+            }
             this.ErrorService.displayMessage({
                 displayType: 'toast',
-                message: message,
+                message: lines.join('<br />'),
                 severity: 'info'
             });
         });
