@@ -230,6 +230,7 @@ window.addEventListener(
                 e.ctrlKey
                     ? SlingExtras.setFavoriteChannel(e.key)
                     : SlingExtras.switchToFavorite(e.key);
+                break;
             case ')':
             case '!':
             case '@':
