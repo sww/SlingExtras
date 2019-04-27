@@ -1,7 +1,6 @@
 const SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
     MAX_RECALL: 5,
-    CHANNEL_RECALL_KEY: this.STORAGE_PREFIX + 'channelRecall',
 
     initialized: false,
 
@@ -18,6 +17,9 @@ const SlingExtras = {
         this.AppConstants = this.WatchService.AppConstants;
 
         this.initialized = true;
+        this.channelRecallKey = this.STORAGE_PREFIX + 'channelRecall';
+        this.favoriteChannelKey = this.STORAGE_PREFIX + 'favoriteChannel';
+
         this.channelChangeListener();
 
         console.debug('SlingExtras initialized:', this.initialized);
@@ -56,6 +58,22 @@ const SlingExtras = {
                 : JSON.parse(channelRecallData);
 
         return channelRecall;
+    },
+
+    setChannelRecall: function(channelId) {
+        const channelRecall = this.getChannelRecall();
+        if (channelRecall.indexOf(channelId) > -1) {
+            // nextChannelId exists in channelRecall, remove nextChannelId from its position.
+            channelRecall.splice(channelRecall.indexOf(channelId), 1)[0];
+        }
+
+        channelRecall.unshift(channelId);
+
+        if (channelRecall.length > self.MAX_RECALL) {
+            channelRecall.pop();
+        }
+
+        localStorage[this.channelRecallKey] = JSON.stringify(channelRecall);
     },
 
     switchToChannel: function(channelId) {
@@ -118,28 +136,12 @@ const SlingExtras = {
                     return;
                 }
 
-                const channelRecall = self.getChannelRecall();
-                if (channelRecall.indexOf(nextChannelId) > -1) {
-                    // nextChannelId exists in channelRecall, remove nextChannelId from its position.
-                    channelRecall.splice(
-                        channelRecall.indexOf(nextChannelId),
-                        1
-                    )[0];
-                }
-
-                channelRecall.unshift(nextChannelId);
-
-                if (channelRecall.length > self.MAX_RECALL) {
-                    channelRecall.pop();
-                }
-
-                localStorage[this.channelRecallKey] = JSON.stringify(channelRecall);
+                self.setChannelRecall(nextChannelId);
             });
     },
 
     jump: function() {
-        const channelRecallData =
-            localStorage[this.STORAGE_PREFIX + 'channelRecall'];
+        const channelRecallData = localStorage[this.channelRecallKey];
         if (!channelRecallData) {
             console.log('Channel recall is empty.');
             return;
@@ -172,8 +174,11 @@ const SlingExtras = {
         self = this;
 
         this.Channels.getChannelByGuid(channelId).then(function(e) {
-            const channel = JSON.stringify({ id: channelId, channelName: e.name })
-            const storageKey = self.STORAGE_PREFIX + 'favoriteChannel' + key;
+            const channel = JSON.stringify({
+                id: channelId,
+                channelName: e.name
+            });
+            const storageKey = self.favoriteChannelKey + key;
             localStorage[storageKey] = channel;
             console.log('Set', storageKey, 'to', channel);
         });
@@ -181,7 +186,7 @@ const SlingExtras = {
 
     switchToFavorite: function(key) {
         key = parseInt(key, 10);
-        const channelData = localStorage[this.STORAGE_PREFIX + 'favoriteChannel' + key]
+        const channelData = localStorage[this.favoriteChannelKey + key];
         if (!channelData) {
             console.log('Favorite channel not set for key: ', key);
             return;
