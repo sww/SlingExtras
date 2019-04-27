@@ -64,7 +64,7 @@ const SlingExtras = {
         const channelRecall = this.getChannelRecall();
         if (channelRecall.indexOf(channelId) > -1) {
             // nextChannelId exists in channelRecall, remove nextChannelId from its position.
-            channelRecall.splice(channelRecall.indexOf(channelId), 1)[0];
+            channelRecall.splice(channelRecall.indexOf(channelId), 1);
         }
 
         channelRecall.unshift(channelId);
