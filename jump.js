@@ -1,5 +1,6 @@
 const SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
+    MAX_FAVORITES: 10,
     MAX_RECALL: 5,
 
     initialized: false,
@@ -184,6 +185,51 @@ const SlingExtras = {
         });
     },
 
+    showFavoriteChannels: function() {
+        const favorites = [];
+        for (var i = 0; i < this.MAX_FAVORITES; i++) {
+            var favoriteChannel = localStorage[this.favoriteChannelKey + i];
+            if (favoriteChannel === undefined) {
+                continue;
+            }
+
+            const data = JSON.parse(favoriteChannel);
+            data.index = i;
+            favorites.push(data);
+        }
+
+        if (favorites.length < 1) {
+            console.log('No favorites to display');
+            return;
+        }
+
+        const channels = favorites
+            .map(channel => {
+                return [
+                    channel,
+                    this.Channels.ExternalChannelService.getAssetOnNow({
+                        channel_guid: channel.id,
+                        type: 'channel'
+                    })
+                ];
+            })
+            .flat();
+
+        Promise.all(channels).then(values => {
+            const lines = [];
+            for (var i = 0; i < values.length; i += 2) {
+                lines.push(
+                    values[i].index + ') ' + values[i].channelName + ': ' + values[i + 1].title
+                );
+            }
+            this.ErrorService.displayMessage({
+                displayType: 'toast',
+                message: lines.join('<br />'),
+                severity: 'info'
+            });
+        });
+    },
+
     switchToFavorite: function(key) {
         key = parseInt(key, 10);
         const channelData = localStorage[this.favoriteChannelKey + key];
@@ -221,6 +267,9 @@ window.addEventListener(
                 break;
             case 'r':
                 SlingExtras.showRecentChannels();
+                break;
+            case 'v':
+                SlingExtras.showFavoriteChannels();
                 break;
             case '1':
             case '2':
