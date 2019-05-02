@@ -71,7 +71,7 @@ const SlingExtras = {
 
         channelRecall.unshift(channelId);
 
-        if (channelRecall.length > self.MAX_RECALL) {
+        if (channelRecall.length > this.MAX_RECALL) {
             channelRecall.pop();
         }
 
@@ -128,17 +128,16 @@ const SlingExtras = {
     },
 
     channelChangeListener: function() {
-        const self = this;
         this.angular
             .injector()
             .get('$rootScope')
-            .$on('$locationChangeStart', function(event, nextUrl) {
-                const nextChannelId = self.getChannelId(nextUrl);
+            .$on('$locationChangeStart', (event, nextUrl) => {
+                const nextChannelId = this.getChannelId(nextUrl);
                 if (!nextChannelId) {
                     return;
                 }
 
-                self.setChannelRecall(nextChannelId);
+                this.setChannelRecall(nextChannelId);
             });
     },
 
@@ -173,14 +172,12 @@ const SlingExtras = {
             return;
         }
 
-        const self = this;
-
-        this.Channels.getChannelByGuid(channelId).then(function(e) {
+        this.Channels.getChannelByGuid(channelId).then((e) => {
             const channel = JSON.stringify({
                 id: channelId,
                 channelName: e.name
             });
-            const storageKey = self.favoriteChannelKey + key;
+            const storageKey = this.favoriteChannelKey + key;
             localStorage[storageKey] = channel;
             console.log('Set', storageKey, 'to', channel);
         });
