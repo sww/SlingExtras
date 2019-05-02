@@ -18,6 +18,7 @@ const SlingExtras = {
         this.AppConstants = this.WatchService.AppConstants;
 
         this.initialized = true;
+
         this.channelRecallKey = this.STORAGE_PREFIX + 'channelRecall';
         this.favoriteChannelKey = this.STORAGE_PREFIX + 'favoriteChannel';
 
@@ -37,8 +38,8 @@ const SlingExtras = {
         angular
             .element(playbackSection)
             .controller('watch').overlaysVisible = !angular
-            .element(playbackSection)
-            .controller('watch').overlaysVisible;
+                .element(playbackSection)
+                .controller('watch').overlaysVisible;
     },
 
     getChannelId: function(url) {
@@ -119,7 +120,7 @@ const SlingExtras = {
         const channelRecall = this.getChannelRecall();
         if (channelRecallIndex > channelRecall.length) {
             console.debug(
-                "channelRecallIndex is greater than channelRecall's length"
+                'channelRecallIndex is greater than channelRecall\'s length'
             );
             return;
         }
@@ -127,11 +128,11 @@ const SlingExtras = {
     },
 
     channelChangeListener: function() {
-        self = this;
+        const self = this;
         this.angular
             .injector()
             .get('$rootScope')
-            .$on('$locationChangeStart', function(event, nextUrl, currentUrl) {
+            .$on('$locationChangeStart', function(event, nextUrl) {
                 const nextChannelId = self.getChannelId(nextUrl);
                 if (!nextChannelId) {
                     return;
@@ -172,7 +173,7 @@ const SlingExtras = {
             return;
         }
 
-        self = this;
+        const self = this;
 
         this.Channels.getChannelByGuid(channelId).then(function(e) {
             const channel = JSON.stringify({
@@ -219,7 +220,11 @@ const SlingExtras = {
             const lines = [];
             for (var i = 0; i < values.length; i += 2) {
                 lines.push(
-                    values[i].index + ') ' + values[i].channelName + ': ' + values[i + 1].title
+                    values[i].index +
+                        ') ' +
+                        values[i].channelName +
+                        ': ' +
+                        values[i + 1].title
                 );
             }
             this.ErrorService.displayMessage({
@@ -256,47 +261,45 @@ window.addEventListener(
         }
 
         switch (e.key) {
-            case 'i':
-                SlingExtras.init();
-                break;
-            case 'o':
-                SlingExtras.togglePlaybackControlsOverlay();
-                break;
-            case 'j':
-                SlingExtras.jump();
-                break;
-            case 'r':
-                SlingExtras.showRecentChannels();
-                break;
-            case 'v':
-                SlingExtras.showFavoriteChannels();
-                break;
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-            case '0':
-                e.ctrlKey
-                    ? SlingExtras.setFavoriteChannel(e.key)
-                    : SlingExtras.switchToFavorite(e.key);
-                break;
-            case ')':
-            case '!':
-            case '@':
-            case '#':
-            case '$':
-                const index = e.keyCode - 48;
-                if (index < 0 || index > SlingExtras.MAX_RECALL) {
-                    console.log('Bad index for switchToRecentChannel');
-                    return;
-                }
-                SlingExtras.switchToRecentChannel(index);
-                break;
+        case 'i':
+            SlingExtras.init();
+            break;
+        case 'd':
+            SlingExtras.toggleDebug();
+            break;
+        case 'o':
+            SlingExtras.togglePlaybackControlsOverlay();
+            break;
+        case 'j':
+            SlingExtras.jump();
+            break;
+        case 'r':
+            SlingExtras.showRecentChannels();
+            break;
+        case 'v':
+            SlingExtras.showFavoriteChannels();
+            break;
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+        case '0':
+            e.ctrlKey
+                ? SlingExtras.setFavoriteChannel(e.key)
+                : SlingExtras.switchToFavorite(e.key);
+            break;
+        case ')':
+        case '!':
+        case '@':
+        case '#':
+        case '$':
+            SlingExtras.switchToRecentChannel(e.keyCode - 48);
+            break;
         }
     },
     false
