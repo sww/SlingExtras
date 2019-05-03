@@ -19,7 +19,7 @@ Key | Function
 `o` | Toggle the playback overlay.
 `r` | Show the last watched channels and what's on now.
 `v` | Show the favorited channels and what's on now.
-`SHIFT+[0-4]` | Jump to the 0th-4th most recently watched channel.
+`SHIFT+[0-9]` | Jump to the 0th-9th most recently watched channel.
 `CTRL+[0-9]` | Set the current channel to [0-9].
 `0-9` | Jump to the channel set for [0-9].
 

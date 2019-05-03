@@ -1,7 +1,7 @@
 const SlingExtras = {
     STORAGE_PREFIX: 'SlingExtras::',
     MAX_FAVORITES: 10,
-    MAX_RECALL: 5,
+    MAX_RECALL: 10,
 
     initialized: false,
 
@@ -290,11 +290,16 @@ window.addEventListener(
                 ? SlingExtras.setFavoriteChannel(e.key)
                 : SlingExtras.switchToFavorite(e.key);
             break;
-        case ')':
         case '!':
         case '@':
         case '#':
         case '$':
+        case '%':
+        case '^':
+        case '&':
+        case '*':
+        case '(':
+        case ')':
             SlingExtras.switchToRecentChannel(e.keyCode - 48);
             break;
         }
