@@ -82,8 +82,7 @@ const SlingExtras = {
         console.debug('Switching to channel', channelId);
 
         this.WatchService.watch(
-            { channel_guid: channelId, type: 'channel' },
-            this.AppConstants.VIDEO.ACTIONS.RESUME
+            { channel_guid: channelId, type: 'channel' }
         );
     },
 
