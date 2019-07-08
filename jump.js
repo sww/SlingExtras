@@ -13,7 +13,7 @@ const SlingExtras = {
         }
 
         this.Channels = this.angular.injector().get('Channels');
-        this.ErrorService = this.angular.injector().get('ErrorService');
+        this.CoreErrorService = this.angular.injector().get('CoreErrorService');
         this.WatchService = this.angular.injector().get('WatchService');
         this.AppConstants = this.WatchService.AppConstants;
 
@@ -107,7 +107,7 @@ const SlingExtras = {
                     i / 2 + ') ' + values[i].name + ': ' + values[i + 1].title
                 );
             }
-            this.ErrorService.displayMessage({
+            this.CoreErrorService.displayMessage({
                 displayType: 'toast',
                 message: lines.join('<br />'),
                 severity: 'info'
@@ -223,7 +223,7 @@ const SlingExtras = {
                         values[i + 1].title
                 );
             }
-            this.ErrorService.displayMessage({
+            this.CoreErrorService.displayMessage({
                 displayType: 'toast',
                 message: lines.join('<br />'),
                 severity: 'info'
