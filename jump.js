@@ -24,6 +24,12 @@ const SlingExtras = {
 
         this.channelChangeListener();
 
+        const toastContainer = document.getElementById('toast-container');
+        if (toastContainer && toastContainer.style) {
+            // Set this so `\n` are newlines in the toast.
+            toastContainer.style.whiteSpace = 'pre-line';
+        }
+
         console.debug('SlingExtras initialized:', this.initialized);
     },
 
@@ -109,7 +115,7 @@ const SlingExtras = {
             }
             this.CoreErrorService.displayMessage({
                 displayType: 'toast',
-                message: lines.join('<br />'),
+                message: lines.join('\n'),
                 severity: 'info'
             });
         });
@@ -225,7 +231,7 @@ const SlingExtras = {
             }
             this.CoreErrorService.displayMessage({
                 displayType: 'toast',
-                message: lines.join('<br />'),
+                message: lines.join('\n'),
                 severity: 'info'
             });
         });
