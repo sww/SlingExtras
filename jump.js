@@ -109,6 +109,10 @@ const SlingExtras = {
         Promise.all(channels).then(values => {
             const lines = [];
             for (var i = 0; i < values.length; i += 2) {
+                if (values[i + 1] === undefined) {
+                    continue;
+                }
+
                 lines.push(
                     i / 2 + ') ' + values[i].name + ': ' + values[i + 1].title
                 );
