@@ -98,7 +98,7 @@ const SlingExtras = {
             .map(channel => {
                 return [
                     this.Channels.getChannelByGuid(channel),
-                    this.Channels.ExternalChannelService.getAssetOnNow({
+                    this.Channels.getAssetOnNow({
                         channel_guid: channel,
                         type: 'channel'
                     })
@@ -214,7 +214,7 @@ const SlingExtras = {
             .map(channel => {
                 return [
                     channel,
-                    this.Channels.ExternalChannelService.getAssetOnNow({
+                    this.Channels.getAssetOnNow({
                         channel_guid: channel.id,
                         type: 'channel'
                     })
