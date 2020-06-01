@@ -96,33 +96,42 @@ const SlingExtras = {
         const channelRecall = this.getChannelRecall();
         const channels = channelRecall
             .map(channel => {
-                return [
-                    this.Channels.getChannelByGuid(channel),
-                    this.Channels.getAssetOnNow({
-                        channel_guid: channel,
-                        type: 'channel'
-                    })
-                ];
+                try {
+                    return [
+                        this.Channels.getChannelByGuid(channel),
+                        this.Channels.getAssetOnNow({
+                            channel_guid: channel,
+                            type: 'channel'
+                        })
+                    ];
+                }
+                catch (error) {
+                    console.debug('Got an error getting recent channel', channel, 'content', error);
+
+                    // If the look ups error out, return `null`s so we can preserve the channel numbering.
+                    return [null, null];
+                }
             })
             .flat();
 
-        Promise.all(channels).then(values => {
-            const lines = [];
-            for (var i = 0; i < values.length; i += 2) {
-                if (values[i + 1] === undefined) {
-                    continue;
-                }
+        Promise.all(channels)
+            .then(values => {
+                const lines = [];
+                for (var i = 0; i < values.length; i += 2) {
+                    if (!values[i + 1]) {
+                        continue;
+                    }
 
-                lines.push(
-                    i / 2 + ') ' + values[i].name + ': ' + values[i + 1].title
-                );
-            }
-            this.CoreErrorService.displayMessage({
-                displayType: 'toast',
-                message: lines.join('\n'),
-                severity: 'info'
+                    lines.push(
+                        i / 2 + ') ' + values[i].name + ': ' + values[i + 1].title
+                    );
+                }
+                this.CoreErrorService.displayMessage({
+                    displayType: 'toast',
+                    message: lines.join('\n'),
+                    severity: 'info'
+                });
             });
-        });
     },
 
     switchToRecentChannel: function(channelRecallIndex) {
